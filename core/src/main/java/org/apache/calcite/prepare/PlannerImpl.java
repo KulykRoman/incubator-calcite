@@ -249,6 +249,33 @@ public class PlannerImpl implements Planner {
   public class ViewExpanderImpl implements ViewExpander {
     @Override public RelRoot expandView(RelDataType rowType, String queryString,
       List<String> schemaPath, List<String> viewPath) {
+      final CalciteCatalogReader catalogReader =
+          createCatalogReader().withSchemaPath(schemaPath);
+      return expandViewHelper(queryString, catalogReader);
+    }
+
+    @Override public RelRoot expandView(RelDataType rowType, String queryString,
+      SchemaPlus rootSchema, List<String> schemaPath) {
+      // View may have different schema path than current connection.
+      Context context = config.getContext();
+      CalciteConnectionConfig connectionConfig = null;
+
+      if (context != null) {
+        connectionConfig = context.unwrap(CalciteConnectionConfig.class);
+      } else {
+        Properties properties = new Properties();
+        properties.setProperty(CalciteConnectionProperty.CASE_SENSITIVE.camelName(),
+            String.valueOf(parserConfig.caseSensitive()));
+        connectionConfig = new CalciteConnectionConfigImpl(properties);
+      }
+      final CalciteCatalogReader catalogReader = new CalciteCatalogReader(
+          CalciteSchema.from(rootSchema),
+          CalciteSchema.from(defaultSchema).path(null),
+          typeFactory, connectionConfig).withSchemaPath(schemaPath);
+      return expandViewHelper(queryString, catalogReader);
+    }
+
+    private RelRoot expandViewHelper(String queryString, CalciteCatalogReader catalogReader) {
       SqlParser parser = SqlParser.create(queryString, parserConfig);
       SqlNode sqlNode;
       try {
@@ -258,8 +285,6 @@ public class PlannerImpl implements Planner {
       }
 
       final SqlConformance conformance = conformance();
-      final CalciteCatalogReader catalogReader =
-          createCatalogReader().withSchemaPath(schemaPath);
       final SqlValidator validator =
           new CalciteSqlValidator(operatorTable, catalogReader, typeFactory,
               conformance);
