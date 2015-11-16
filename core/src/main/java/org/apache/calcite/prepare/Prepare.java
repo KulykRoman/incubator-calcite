@@ -426,7 +426,7 @@ public abstract class Prepare {
   /** Interface by which validator and planner can read table metadata. */
   public interface CatalogReader
       extends RelOptSchema, SqlValidatorCatalogReader, SqlOperatorTable {
-    PreparingTable getTableForMember(List<String> names);
+    @Override PreparingTable getTableForMember(List<String> names);
 
     /** Returns a catalog reader the same as this one but with a possibly
      * different schema path. */
