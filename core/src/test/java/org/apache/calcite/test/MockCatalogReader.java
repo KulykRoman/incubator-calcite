@@ -71,8 +71,11 @@ import org.apache.calcite.schema.impl.ViewTableMacro;
 import org.apache.calcite.sql.SqlAccessType;
 import org.apache.calcite.sql.SqlCollation;
 import org.apache.calcite.sql.SqlFunction;
+import org.apache.calcite.sql.SqlFunctionCategory;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlOperator;
+import org.apache.calcite.sql.SqlSyntax;
 import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.type.ObjectSqlType;
@@ -1584,6 +1587,15 @@ public class MockCatalogReader extends CalciteCatalogReader {
       return super.newAttributeInitializer(type, constructor, iAttribute,
          constructorArgs, context);
     }
+  }
+
+  @Override public void lookupOperatorOverloads(SqlIdentifier opName,
+      SqlFunctionCategory category, SqlSyntax syntax, List<SqlOperator> operatorList) {
+    throw new UnsupportedOperationException("NYI");
+  }
+
+  @Override public List<SqlOperator> getOperatorList() {
+    throw new UnsupportedOperationException("NYI");
   }
 }
 
