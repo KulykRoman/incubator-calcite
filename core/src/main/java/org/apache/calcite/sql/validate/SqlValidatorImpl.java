@@ -3621,7 +3621,10 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
     final SqlValidatorScope whereScope = getWhereScope(select);
     final SqlNode expandedWhere = expand(where, whereScope);
     select.setWhere(expandedWhere);
-    validateWhereOrOn(whereScope, expandedWhere, "WHERE");
+    //Changes by Roman Kulyk
+    //Added changes from 05fea03 which was refactored
+    // by 9bd7d755 (according to Drill_Get_Off_Calcite_Fork spreadsheet)
+    validateWhereOrOn(whereScope, where, "WHERE");
   }
 
   protected void validateWhereOrOn(
