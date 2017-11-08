@@ -20,15 +20,18 @@ package org.apache.calcite.util;
  * General class for Date/Time/Timestamp literals (TimestampString, DateString, TimeString)
  * to make them comparable to each other
  */
-public abstract class AbstractDateTime implements Comparable<AbstractDateTime> {
+public abstract class AbstractDateTime implements Comparable {
   protected final String v;
 
   public AbstractDateTime(String v) {
     this.v = v;
   }
 
-  @Override public int compareTo(AbstractDateTime o) {
-    return v.compareTo(o.v);
+  @Override public int compareTo(Object o) {
+    if (o instanceof NlsString) {
+      return v.compareTo(((NlsString) o).getValue());
+    }
+    return v.compareTo(((AbstractDateTime) o).v);
   }
 }
 
