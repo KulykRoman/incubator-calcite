@@ -107,6 +107,48 @@ public class TimestampString extends AbstractDateTime {
     return v.hashCode();
   }
 
+  /** Appends hour:minute:second to a buffer; assumes they are valid. */
+  static StringBuilder hms(StringBuilder b, int h, int m, int s) {
+    int2(b, h);
+    b.append(':');
+    int2(b, m);
+    b.append(':');
+    int2(b, s);
+    return b;
+  }
+
+  /** Appends year-month-day and hour:minute:second to a buffer; assumes they
+   * are valid. */
+  static StringBuilder ymdhms(StringBuilder b, int year, int month, int day,
+                              int h, int m, int s) {
+    ymd(b, year, month, day);
+    b.append(' ');
+    hms(b, h, m, s);
+    return b;
+  }
+
+  /** Appends year-month-day to a buffer; assumes they are valid. */
+  static StringBuilder ymd(StringBuilder b, int year, int month, int day) {
+    int4(b, year);
+    b.append('-');
+    int2(b, month);
+    b.append('-');
+    int2(b, day);
+    return b;
+  }
+
+  private static void int4(StringBuilder buf, int i) {
+    buf.append((char) ('0' + (i / 1000) % 10));
+    buf.append((char) ('0' + (i / 100) % 10));
+    buf.append((char) ('0' + (i / 10) % 10));
+    buf.append((char) ('0' + i % 10));
+  }
+
+  private static void int2(StringBuilder buf, int i) {
+    buf.append((char) ('0' + (i / 10) % 10));
+    buf.append((char) ('0' + i % 10));
+  }
+
   /** Creates a TimestampString from a Calendar. */
   public static TimestampString fromCalendarFields(Calendar calendar) {
     return new TimestampString(
