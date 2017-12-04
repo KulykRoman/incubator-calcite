@@ -548,7 +548,7 @@ public abstract class RelOptUtil {
     switch (logic) {
     case TRUE_FALSE_UNKNOWN:
     case UNKNOWN_AS_TRUE:
-      if (!containsNullableFields(seekRel)) {
+      if (!containsNullableFields(seekRel) && !notIn) {
         logic = Logic.TRUE_FALSE;
       }
     }
